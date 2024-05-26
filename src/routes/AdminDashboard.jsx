@@ -8,23 +8,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
-const Admin = () => {
+const AdminDashboard = () => {
   const [admins, setAdmins] = useState([
     {
       name: "John Doe",
       email: "johndoe@gmail.com",
-      status: "Pending",
     },
     {
       name: "John Doe",
       email: "johndoe@gmail.com",
-      status: "Pending",
     },
     {
       name: "John Doe",
       email: "johndoe@gmail.com",
-      status: "Pending",
     },
   ]);
 
@@ -36,9 +34,9 @@ const Admin = () => {
         </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="mr-20px">Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
@@ -46,7 +44,11 @@ const Admin = () => {
             <TableRow>
               <TableCell>{admin.name}</TableCell>
               <TableCell>{admin.email}</TableCell>
-              <TableCell>{admin.status}</TableCell>
+              <TableCell>
+                <Button variant = "destructive"> 
+                  Remove
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -54,4 +56,4 @@ const Admin = () => {
     </div>
   );
 };
-export default Admin;
+export default AdminDashboard;
