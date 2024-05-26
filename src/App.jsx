@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import Appointments from "./routes/Appointments";
 import Reports from "./routes/Reports";
 import Dashboard from "./routes/Dashboard";
+import Admin from "./routes/Admin";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ClinicLayout from "./components/ClinicLayout";
@@ -49,6 +50,16 @@ const router = createBrowserRouter([
       {
         path: "dashboard/",
         element: <Dashboard />
+      }
+    ]
+  },
+  {
+    path: "/",
+    element: <ClinicLayout />,
+    children: [
+      {
+        path: "admin/",
+        element: <Admin />
       }
     ]
   }
