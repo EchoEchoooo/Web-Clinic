@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/dialog"
 
 import {
+  CalendarCheck,
   LogOut,
+  NotebookText,
   Settings,
   User
 } from "lucide-react"
@@ -59,6 +61,14 @@ const ClinicNav = () => {
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                       </Dialog>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <CalendarCheck className="mr-2 h-4 w-4" />
+                      <span>Appointments</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <NotebookText className="mr-2 h-4 w-4" />
+                      <span>Reports</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />

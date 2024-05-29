@@ -33,10 +33,10 @@ const AdminDashboard = () => {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </TableCaption>
         <TableHeader>
-          <TableRow>
-            <TableHead className="mr-20px">Name</TableHead>
+          <TableRow >
+            <TableHead >Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Action</TableHead>
+            <TableHead className = "px-8" >Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
               <TableCell>{admin.name}</TableCell>
               <TableCell>{admin.email}</TableCell>
               <TableCell>
-                <Button variant = "destructive"> 
+                <Button variant = "link"> 
                   Remove
                 </Button>
               </TableCell>
