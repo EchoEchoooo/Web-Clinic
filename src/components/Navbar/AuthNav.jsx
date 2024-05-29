@@ -1,19 +1,22 @@
-import { Button } from "../ui/button"
+
 import Logo from "../../assets/caridentlogo2.png";
 import { ModeToggle } from "../mode-toggle";
+import { Link, useLocation } from "react-router-dom";
+
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 
 import {
   CalendarCheck,
+  LayoutDashboard,
   LogOut,
   NotebookText,
   Settings,
   User
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   DropdownMenu,
@@ -23,15 +26,29 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
+
+import DentistDialog from "../Dentist/DentistDialog";
+import AdminDialog from "../Admin/AdminDialog";
 
 const AuthNav = () => {
+  const location = useLocation();
+
+  const renderRoleSpecificButton = () => {
+    if (location.pathname.includes("/admindashboard")) {
+      return <AdminDialog />;
+    } else if (location.pathname.includes("/dashboard")) {
+      return <DentistDialog />;
+    }
+    return null;
+  };
+
   return (
     <>
       <div className="bg-background-95 sticky top-0 z-50 border-b border-slate-100 backdrop-blur-sm dark:border-gray-800 dark:bg-zinc-950/60">
@@ -43,6 +60,7 @@ const AuthNav = () => {
             </a>
             <div className="flex items-center gap-2">
               <ModeToggle />
+              {renderRoleSpecificButton()}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar>
@@ -54,30 +72,43 @@ const AuthNav = () => {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <Dialog>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                      </Dialog>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <CalendarCheck className="mr-2 h-4 w-4" />
-                      <span>Appointments</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <NotebookText className="mr-2 h-4 w-4" />
-                      <span>Reports</span>
-                    </DropdownMenuItem>
+                    <Link to="/dashboard">
+                      <DropdownMenuItem>
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>View Dentists</span>
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link to="/admindashboard">
+                      <DropdownMenuItem>
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>View Admins</span>
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator />
+                    <Link to="/appointments">
+                      <DropdownMenuItem>
+                        <CalendarCheck className="mr-2 h-4 w-4" />
+                        <span>Appointments</span>
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link to="/reports">
+                      <DropdownMenuItem>
+                        <NotebookText className="mr-2 h-4 w-4" />
+                        <span>Reports</span>
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
+                  <Link to="/">
+                    <DropdownMenuItem>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -85,6 +116,7 @@ const AuthNav = () => {
         </div>
       </div>
     </>
-  )
-}
-export default AuthNav
+  );
+};
+
+export default AuthNav;

@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
-
+import { Button } from "@/components/ui/button";
 const Appointments = () => {
   const [users, setUsers] = useState([
     {
@@ -17,7 +17,7 @@ const Appointments = () => {
       time: "7:01 AM",
       email: "johndoe@gmail.com",
       image: "View",
-      status: "Pending"
+      status: "Pending",
     },
     {
       name: "John Doe",
@@ -25,14 +25,15 @@ const Appointments = () => {
       time: "7:01 AM",
       email: "johndoe@gmail.com",
       image: "View",
-      status: "Pending"
-    }, {
+      status: "Pending",
+    },
+    {
       name: "John Doe",
       date: "02-02-2003",
       time: "7:01 AM",
       email: "johndoe@gmail.com",
       image: "View",
-      status: "Pending"
+      status: "Pending",
     },
   ]);
 
@@ -47,7 +48,7 @@ const Appointments = () => {
             <TableHead>Time</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Image</TableHead>
-            <TableHead >Status</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
@@ -57,13 +58,15 @@ const Appointments = () => {
               <TableCell>{user.date}</TableCell>
               <TableCell>{user.time}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.image}</TableCell>
+              <TableCell>
+                <Button variant="link">View</Button>
+              </TableCell>
               <TableCell>{user.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
-  )
-}
-export default Appointments
+  );
+};
+export default Appointments;

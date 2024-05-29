@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-const Appointments = () => {
+const Reports = () => {
   let image = "https://upload.wikimedia.org/wikipedia/commons/d/db/06-10-06smile.jpg";
 
   const [reports, setReports] = useState([
@@ -92,4 +92,4 @@ const Appointments = () => {
     </div>
   )
 }
-export default Appointments
+export default Reports
