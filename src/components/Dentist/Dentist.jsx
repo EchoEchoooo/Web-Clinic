@@ -16,11 +16,11 @@ const New_Dentist = ({ handleSignIn }) => {
     return (
         <>
             <div className={"p-4"}>
-                <h1 className="mb-4 text-center text-2xl font-semibold text-gray-600">
+                <h1 className="mb-4 text-center text-2xl font-semibold text-white">
                     New Dentist
                 </h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3">
-                    <div>
+                    <div >
                         <Label htmlFor="name">Name</Label>
                         <Input type="name" placeholder="Enter your Name" />
                     </div>
@@ -32,7 +32,7 @@ const New_Dentist = ({ handleSignIn }) => {
                         <Label htmlFor="phone_number">Phone Number</Label>
                         <Input type="phone_number" placeholder="Enter your Number" />
                     </div>
-                    <Button>Add</Button>
+                    <Button className="mt-4">Add Dentist</Button>
                 </form>
             </div>
             <p

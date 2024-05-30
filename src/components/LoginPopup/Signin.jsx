@@ -16,17 +16,17 @@ const Signin = ({ handleSignIn }) => {
   return (
     <>
       <div className={"p-4"}>
-        <h1 className="text-2xl text-gray-600 font-semibold text-center mb-4 ">
+        <h1 className="text-2xl text-white font-semibold text-center mb-4 ">
           Create Your Account
         </h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3 ">
           <div>
             <Label htmlFor="username">Username</Label>
-            <Input type="text" placeholder="Choose a Username" /> 
+            <Input type="text" placeholder="Choose a Username" />
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input type="email" placeholder="Enter your email" /> 
+            <Input type="email" placeholder="Enter your email" />
           </div>
 
           <div>
@@ -50,7 +50,7 @@ const Signin = ({ handleSignIn }) => {
               )}
             </div>
           </div>
-          <Button>Create Account</Button>
+          <Button className="mt-4" >Create Account</Button>
         </form>
         <p
           className="text-center text-gray-500 text-sm my-3 hover:text-blue-700 cursor-pointer"

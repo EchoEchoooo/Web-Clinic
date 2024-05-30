@@ -29,9 +29,6 @@ const AdminDashboard = () => {
   return (
     <div className="d-flex">
       <Table>
-        <TableCaption>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </TableCaption>
         <TableHeader>
           <TableRow >
             <TableHead >Name</TableHead>

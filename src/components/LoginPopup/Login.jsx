@@ -16,20 +16,20 @@ const Login = ({ handleSignIn }) => {
       const response = await login(username, password)
       const { token, expiration } = response.data
     } catch (error) {
-      
+
     }
   }
 
   return (
     <>
       <div className={"p-4"}>
-        <h1 className="mb-4 text-center text-2xl font-semibold text-gray-600">
+        <h1 className="mb- text-center text-2xl font-semibold text-gray-600">
           Log in
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3">
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input type="email" placeholder="Enter your email" /> 
+            <Input type="email" placeholder="Enter your email" />
           </div>
           <div>
             <Label htmlFor="email">Password</Label>
@@ -52,7 +52,7 @@ const Login = ({ handleSignIn }) => {
               )}
             </div>
           </div>
-          <Button>Submit</Button>
+          <Button className="mt-4" >Submit</Button>
         </form>
         <p
           className="my-3 cursor-pointer text-center text-sm text-gray-500 hover:text-blue-700"

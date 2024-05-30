@@ -1,21 +1,14 @@
-
 import Logo from "../../assets/caridentlogo2.png";
 import { ModeToggle } from "../mode-toggle";
 import { Link, useLocation } from "react-router-dom";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 import {
   CalendarCheck,
   LayoutDashboard,
   LogOut,
   NotebookText,
-  Settings,
-  User
+  Settings
 } from "lucide-react";
 
 import {
