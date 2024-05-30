@@ -47,7 +47,7 @@ const Appointments = () => {
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Image</TableHead>
+            <TableHead className = "px-8">Image</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -59,7 +59,7 @@ const Appointments = () => {
               <TableCell>{user.time}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>
-                <Button variant="link">View</Button>
+                <Button variant="link" >View</Button>
               </TableCell>
               <TableCell>{user.status}</TableCell>
             </TableRow>

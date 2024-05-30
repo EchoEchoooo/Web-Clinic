@@ -3,15 +3,21 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "@/components/ui/input"
 import { Label } from '@/components/ui/label'
 import { Button } from "@/components/ui/button";
+import { login } from "@/services/auth";
 
 const Login = ({ handleSignIn }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // call api
+    try {
+      const response = await login(username, password)
+      const { token, expiration } = response.data
+    } catch (error) {
+      
+    }
   }
 
   return (
