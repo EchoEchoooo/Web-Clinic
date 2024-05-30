@@ -27,3 +27,17 @@ export const resetPassword = async () => {
         `${BASE_URL}/Account/ResetPassword`
     )
 }
+
+export const addDentist = async (token, email, name, phoneNumber) => {
+    return axios.post(
+        `${BASE_URL}/Clinic/AddDentist`,
+        { email: email, name: name, phoneNumber: phoneNumber },
+        {
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+}

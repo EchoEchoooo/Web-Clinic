@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import Login from "./Login"
@@ -15,8 +18,14 @@ export default function LoginDialog() {
       <DialogTrigger asChild>
         <Button>Login</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] p-0">
-        { showSignIn ? (
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>
+            {showSignIn ? "Sign In" : "Login"}
+          </DialogTitle>
+
+        </DialogHeader>
+        {showSignIn ? (
           <Signin handleSignIn={setShowSignIn} />
         ) : (
           <Login handleSignIn={setShowSignIn} />

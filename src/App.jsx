@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider"
 import Landing  from "@/routes/Landing";
 import AuthLayout from "./components/AuthLayout";
@@ -71,6 +72,7 @@ const App = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
+      <Toaster />
     </ThemeProvider>
   );
 };
