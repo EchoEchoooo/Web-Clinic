@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'https://www.asuna.rocks:7153'
+const BASE_URL = 'https://api.carident.live'
 
 export const login = async (email, password) => {
     return axios.post(
