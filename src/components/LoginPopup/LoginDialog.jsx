@@ -13,24 +13,23 @@ import { useState } from "react";
 
 export default function LoginDialog() {
   const [showSignIn, setShowSignIn] = useState(false);
-  const [showLogIn, setShowLogIn] = useState(false);
 
   return (
     <div className="flex space-x-4">
       <Dialog>
         <DialogTrigger asChild>
           <div>
-            <Button className="min-w-32 px-8">Register</Button>
+            <Button variant = "register" className="min-w-32 px-8 ">Register</Button>
           </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{showLogIn ? "Login" : "Sign In"}</DialogTitle>
+            <DialogTitle>{showSignIn ? "Sign In" : "Login"}</DialogTitle>
           </DialogHeader>
-          {showLogIn ? (
-            <Login handleSignIn={setShowLogIn} />
+          {showSignIn ? (
+            <Signin handleSignIn={setShowSignIn} />
           ) : (
-            <Signin handleSignIn={setShowLogIn} />
+            <Login handleSignIn={setShowSignIn} />
           )}
         </DialogContent>
       </Dialog>

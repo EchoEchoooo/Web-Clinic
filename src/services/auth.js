@@ -12,7 +12,7 @@ export const login = async (email, password) => {
 export const register = async (email, password) => {
     return axios.post(
         `${BASE_URL}/Account/Register`,
-        {email: email, password: password}
+        { email: email, password: password }
     );
 }
 
@@ -41,3 +41,27 @@ export const addDentist = async (token, email, name, phoneNumber) => {
         }
     );
 }
+
+export const getSharedReports = async (token) => {
+    return axios.get(
+        `${BASE_URL}/Clinic/GetSharedReports`,
+        {
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+};
+
+export const deleteSharedReport = async (token, reportId) => {
+    return axios.delete(
+        `${BASE_URL}/Clinic/DeleteSharedReport?reportId=${reportId}`,
+        {
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+};
