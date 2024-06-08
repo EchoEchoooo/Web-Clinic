@@ -1,46 +1,71 @@
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input"
-import { Label } from '@/components/ui/label'
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Form, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { addUserToClinicAdminByEmail } from "@/services/auth";
+import { toast } from "@/components/ui/use-toast";
 
-const New_Admin = ({ handleSignIn }) => {
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+const formSchema = z.object({
+    email: z.string().email("Invalid email address"),
+});
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        // call api
+const New_Admin = () => {
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+        },
+    });
+
+    async function onSubmit(values) {   
+        try {
+            const token = window.localStorage.getItem('token');
+            if (!token) {
+                throw new Error("No token found, please login again.");
+            }
+            await addUserToClinicAdminByEmail(token, values.email);
+            toast({
+                title: "Admin added successfully",
+                description: "The admin has been added to the system.",
+                status: "success",
+            });
+            form.reset();
+        } catch (error) {
+            toast({
+                title: "Error adding admin",
+                description: error.message || "An error occurred.",
+                status: "error",
+            });
+        }
     }
 
     return (
-        <>
-            <div className={"p-4"}>
-                <h1 className="mb-4 text-center text-2xl font-semibold text-gray-600">
-                    New Admin
-                </h1>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3 p-3">
-                    <div>
-                        <Label htmlFor="name">Name</Label>
-                        <Input type="name" placeholder="Enter your Name" />
-                    </div>
-                    <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input type="email" placeholder="Enter your Email" />
-                    </div>
-                    <div>
-                        <Label htmlFor="password">Password</Label>
-                        <Input type="password" placeholder="Enter your Password" />
-                    </div>
-                    <Button>Add</Button>
+        <div className="p-4">
+            <h1 className="mb-4 text-center text-2xl font-semibold text-gray-600">
+                New Admin
+            </h1>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 p-3">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Email</FormLabel>
+                                <Input placeholder="Enter your Email" {...field} />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="mt-4">
+                        Add Admin
+                    </Button>
                 </form>
-            </div>
-            <p
-                className="my-3 cursor-pointer text-center text-sm text-gray-500 hover:text-blue-700"
-                onClick={handleSignIn}
-            >
-            </p>
-        </>
+            </Form>
+        </div>
     );
 };
 

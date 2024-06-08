@@ -65,3 +65,16 @@ export const deleteSharedReport = async (token, reportId) => {
         }
     );
 };
+
+export const addUserToClinicAdminByEmail = async (token, userEmail) => {
+    return axios.post(
+        `${BASE_URL}/Clinic/AddUserToClinicAdminByEmail?userEmail=${userEmail}`,
+        null,
+        {
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+};
