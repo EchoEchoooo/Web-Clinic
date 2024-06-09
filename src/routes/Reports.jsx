@@ -20,19 +20,21 @@ import {
   AlertDialogTrigger,
 
 } from "@/components/ui/alert-dialog";
-import { getSharedReports } from '@/services/auth';
+import { getSharedReports,deleteSharedReport } from '@/services/auth';
 import { toast } from "@/components/ui/use-toast";
-import { deleteSharedReport } from "@/services/auth";
-import { Dialog } from "@radix-ui/react-dialog";
+import { useAuth } from "@/context/Authycontext";
 
-const token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDYXJpZGVudE1lZGl4IiwiaXNzIjoiQ2FyaWRlbnRNZWRpeCIsImV4cCI6MTcxODM3MDUwNCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3R1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiNGFkNThjYzQtYzg5ZC00ZGNkLWFkODMtYmI0MDI1MGU0ODg5IiwianRpIjoiYjNlZGU1OGMtZjg5OS00YjY5LWIxNjctMTU0NjU3YTdkZjc3IiwiaWF0IjoxNzE3NzY1NzA0LCJuYmYiOjE3MTc3NjU3MDR9.qiNlf50n0msr6l20M7nRIrOBisyMUw_D_Xir2ib4lvXPuxc2LzlMHoUp-x4RwDwFVHR5wKA6H6d61B3kL3kV3g';
 const Reports = () => {
+  const { user } = useAuth(); // Get the user object from the AuthContext
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await getSharedReports(token);
+        // Check if user is logged in before fetching reports
+        if (!user) return;
+        
+        const response = await getSharedReports(user.token); // Use the user's token
         setReports(response.data);
       } catch (error) {
         console.error("Error fetching shared reports:", error);
@@ -47,31 +49,7 @@ const Reports = () => {
     };
 
     fetchReports();
-  }, []);
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-/*   const handleView = async (reportId) => {
-    try {
-      await viewSharedReport(token, reportId);
-
-    } catch (error) {
-      console.error("Error viewing shared report:", error);
-      toast({
-        title: "Error viewing shared report",
-        description: error.message,
-        status: "error",
-        variant: "destructive"
-      });
-    }
-  }; */
+  }, [user]);
 
   const handleRemove = async (reportId) => {
     try {

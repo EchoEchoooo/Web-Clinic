@@ -12,12 +12,11 @@ import {
 } from "@/components/ui/form";
 import { Label } from '@/components/ui/label'
 import { Button } from "@/components/ui/button";
-import { login } from "@/services/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/components/ui/use-toast";
-
+import { useAuth } from '@/context/Authycontext'; // Import the useAuth hook to access authentication functionality
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -29,6 +28,7 @@ const formSchema = z.object({
 
 const Login = ({ handleSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const { loginUser } = useAuth(); // Use the useAuth hook to access the loginUser function
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -40,13 +40,10 @@ const Login = ({ handleSignIn }) => {
 
   async function onSubmit(values) {
     try {
-      const response = await login(values.email, values.password);
-      if (response.token) {
-        window.localStorage.setItem('token', response.token);
-      }
+      await loginUser(values.email, values.password); // Call the loginUser function from the authentication context
       toast({
         title: "Login successful",
-        description: response.message,
+        description: "You have successfully logged in.",
         status: "success",
       });
     } catch (error) {

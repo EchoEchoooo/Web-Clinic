@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme-provider"
-import Landing  from "@/routes/Landing";
+import { ThemeProvider } from "@/components/theme-provider";
+import Landing from "@/routes/Landing";
 import AuthLayout from "./components/AuthLayout";
 import Layout from "./components/Layout";
 import Appointments from "./routes/Appointments";
@@ -13,6 +12,7 @@ import AdminDashboard from "./routes/AdminDashboard";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ClinicLayout from "./components/ClinicLayout";
 import AdminLayout from "./components/AdminLayout";
+import { AuthProvider } from '@/context/Authycontext';
 
 const router = createBrowserRouter([
   {
@@ -68,12 +68,13 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
-      <Toaster />
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+        <Toaster />
+      </ThemeProvider>
+    </AuthProvider>
   );
 };
 
