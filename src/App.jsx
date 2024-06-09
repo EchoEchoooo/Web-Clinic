@@ -8,7 +8,6 @@ import Appointments from "./routes/Appointments";
 import Reports from "./routes/Reports";
 import Dashboard from "./routes/Dashboard";
 import AdminDashboard from "./routes/AdminDashboard";
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ClinicLayout from "./components/ClinicLayout";
 import AdminLayout from "./components/AdminLayout";

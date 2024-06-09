@@ -1,41 +1,25 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getAppointments } from "@/services/auth";
+import { Table, TableBody, TableCell, TableCaption, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+
 const Appointments = () => {
-  const [users, setUsers] = useState([
-    {
-      name: "John Doe",
-      date: "02-02-2003",
-      time: "7:01 AM",
-      email: "johndoe@gmail.com",
-      image: "View",
-      status: "Pending",
-    },
-    {
-      name: "John Doe",
-      date: "02-02-2003",
-      time: "7:01 AM",
-      email: "johndoe@gmail.com",
-      image: "View",
-      status: "Pending",
-    },
-    {
-      name: "John Doe",
-      date: "02-02-2003",
-      time: "7:01 AM",
-      email: "johndoe@gmail.com",
-      image: "View",
-      status: "Pending",
-    },
-  ]);
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDYXJpZGVudE1lZGl4IiwiaXNzIjoiQ2FyaWRlbnRNZWRpeCIsImV4cCI6MTcxODU1MjYxMiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3R1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiOTEzZGYxM2QtMDI1Mi00ZmFhLWEyMDAtMDJjM2ViYzA3MjIxIiwianRpIjoiZTYwYzVkOGEtODRmYi00MWE1LThiZDQtNmI2MjhmMjliY2JiIiwiaWF0IjoxNzE3OTQ3ODEyLCJuYmYiOjE3MTc5NDc4MTJ9.H4ZytGYUnVHNb_JQLot2J7kXPcdHOJyR5KaR9YQrIWnrVUFayGzb6z9gxF82ezRZVkIwOMinBGeJ7sy5uRWkWA"; 
+        const response = await getAppointments(token); 
+        setAppointments(response.data); 
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []); 
 
   return (
     <div className="d-flex">
@@ -43,25 +27,25 @@ const Appointments = () => {
         <TableCaption>A list of your recent appointments.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead className="px-8">Image</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Clinic Name</TableHead>
+            <TableHead>Scheduled Date</TableHead>
+            <TableHead>Scheduled Time</TableHead>
+            <TableHead>Dentist Name</TableHead>
+            <TableHead>Dentist Email</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-          {users.map((user, index) => (
-            <TableRow>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.date}</TableCell>
-              <TableCell>{user.time}</TableCell>
-              <TableCell>{user.email}</TableCell>
+          {appointments.map((appointment, index) => (
+            <TableRow key={index}>
+              <TableCell>{appointment.clinic.name}</TableCell>
+              <TableCell>{new Date(appointment.scheduledAt).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(appointment.scheduledAt).toLocaleTimeString()}</TableCell>
+              <TableCell>{appointment.dentist.name}</TableCell>
+              <TableCell>{appointment.dentist.email}</TableCell>
               <TableCell>
-                <Button variant="link" >View</Button>
+                <Button variant="link">View</Button>
               </TableCell>
-              <TableCell>{user.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -69,4 +53,5 @@ const Appointments = () => {
     </div>
   );
 };
+
 export default Appointments;

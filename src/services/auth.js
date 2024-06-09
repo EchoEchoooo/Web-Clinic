@@ -78,3 +78,27 @@ export const addUserToClinicAdminByEmail = async (token, userEmail) => {
         }
     );
 };
+
+export const getAppointments = async (token) => {
+    return axios.get(
+        `${BASE_URL}/Appointment/GetAppointments`,
+        {
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+};
+
+export const getDentist = async (clinicId, token) => {
+    return axios.get(
+        `${BASE_URL}/Clinic/GetClinic?clinicId=${clinicId}`,
+        {
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+    );
+};
