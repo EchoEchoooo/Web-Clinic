@@ -1,17 +1,8 @@
 import React, { useState } from "react";
-import { FaEye, FaEyeSlash, FaLinkedinIn } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { register } from "@/services/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,13 +23,12 @@ const Signin = ({ handleSignIn }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
 
- async function onSubmit(values) {
+  async function onSubmit(values) {
     try {
       const response = await register(values.email, values.password);
       if (response.token) {
@@ -90,12 +80,12 @@ const Signin = ({ handleSignIn }) => {
                         <Input placeholder="Enter your password" type={showPassword ? "text" : "password"} {...field} />
                         {showPassword ? (
                           <FaEye
-                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 "
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
                             onClick={() => setShowPassword(!showPassword)}
                           />
                         ) : (
                           <FaEyeSlash
-                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 "
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
                             onClick={() => setShowPassword(!showPassword)}
                           />
                         )}
@@ -106,13 +96,13 @@ const Signin = ({ handleSignIn }) => {
                 )}
               />
             </div>
-            <Button className="mt-4" >Submit</Button>
+            <Button className="mt-4">Submit</Button>
           </form>
         </Form>
 
         <p
           className="text-center text-gray-500 text-sm my-3 hover:text-blue-700 cursor-pointer"
-          onClick={() => handleSignIn(false)}
+          onClick={() => handleSignIn("login")}
         >
           Already have an Account? Log in
         </p>

@@ -12,42 +12,29 @@ import Signin from "./Signin";
 import { useState } from "react";
 
 export default function LoginDialog() {
-  const [showSignIn, setShowSignIn] = useState(false);
+  const [dialogType, setDialogType] = useState("login"); // new state to manage dialog type
 
   return (
     <div className="flex space-x-4">
       <Dialog>
         <DialogTrigger asChild>
           <div>
-            <Button variant = "register" className="min-w-32 px-8 ">Register</Button>
+            <Button variant="register" className="min-w-32 px-8" onClick={() => setDialogType("register")}>Register</Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{showSignIn ? "Sign In" : "Login"}</DialogTitle>
-          </DialogHeader>
-          {showSignIn ? (
-            <Signin handleSignIn={setShowSignIn} />
-          ) : (
-            <Login handleSignIn={setShowSignIn} />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog>
         <DialogTrigger asChild>
           <div>
-            <Button className="min-w-32 px-8">Login</Button>
+            <Button className="min-w-32 px-8" onClick={() => setDialogType("login")}>Login</Button>
           </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{showSignIn ? "Sign In" : "Login"}</DialogTitle>
+            <DialogTitle>{dialogType === "login" ? "Login" : "Register"}</DialogTitle>
           </DialogHeader>
-          {showSignIn ? (
-            <Signin handleSignIn={setShowSignIn} />
+          {dialogType === "login" ? (
+            <Login handleSignIn={setDialogType} />
           ) : (
-            <Login handleSignIn={setShowSignIn} />
+            <Signin handleSignIn={setDialogType} />
           )}
         </DialogContent>
       </Dialog>
