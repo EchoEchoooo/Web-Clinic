@@ -31,11 +31,16 @@ const Login = ({ handleSignIn }) => {
       if (response.token) {
         window.localStorage.setItem('token', response.token);
       }
+
       toast({
         title: "Login successful",
         description: response.message,
         status: "success",
       });
+
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1500);
     } catch (error) {
       toast({
         variant: "destructive",
