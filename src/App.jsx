@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import Landing from "@/routes/Landing";
@@ -20,9 +21,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Landing />
-      }
-    ]
+        element: <Landing />,
+      },
+    ],
   },
   {
     path: "/",
@@ -30,9 +31,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "appointments/",
-        element: <Appointments />
-      }
-    ]
+        element: <Appointments />,
+      },
+    ],
   },
   {
     path: "/",
@@ -40,9 +41,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "reports/",
-        element: <Reports />
-      }
-    ]
+        element: <Reports />,
+      },
+    ],
   },
   {
     path: "/",
@@ -50,20 +51,20 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard/",
-        element: <Dashboard />
-      }
-    ]
+        element: <Dashboard />,
+      },
+    ],
   },
   {
     path: "/",
     element: <AdminLayout />,
     children: [
       {
-        path: "admindashboard/",
-        element: <AdminDashboard />
-      }
-    ]
-  }
+        path: "admin/",
+        element: <AdminDashboard />,
+      },
+    ],
+  },
 ]);
 
 const App = () => {

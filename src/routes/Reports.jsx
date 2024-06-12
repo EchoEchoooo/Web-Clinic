@@ -9,16 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { getSharedReports, deleteSharedReport } from "@/services/auth";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/Authycontext";
@@ -87,8 +87,8 @@ const Reports = () => {
           <CardContent>
             <div className="flex flex-row flex-wrap justify-center gap-2">
               {report.images.map((image, idx) => (
-                <AlertDialog key={idx}>
-                  <AlertDialogTrigger asChild>
+                <Dialog key={idx}>
+                  <DialogTrigger asChild>
                     <div>
                       <img
                         className="h-64 rounded-xl object-cover"
@@ -96,39 +96,40 @@ const Reports = () => {
                         alt={`Report ${index} image ${idx}`}
                       />
                     </div>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">{`Image #${idx + 1}`}</AlertDialogTitle>
-                      <AlertDialogDescription>
+                  </DialogTrigger>
+                  <DialogContent className="">
+                    <DialogHeader>
+                      <DialogTitle
+                        className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">{`Image #${idx + 1}`}</DialogTitle>
+                      <DialogDescription>
                         <div className="flex justify-center">
                           <img
-                            className="rounded-lg"
+                            className="rounded-lg max-h-[calc(100vh-12rem)]"
                             src={`https://api.carident.live/${image.plottedImagePath}`}
                             alt={`Report ${index} image ${idx}`}
                           />
                         </div>
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
                         Close
-                      </AlertDialogCancel>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               ))}
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <AlertDialog> 
-              <AlertDialogTrigger asChild>
+            <Dialog> 
+              <DialogTrigger asChild>
                 <Button variant="outline">View</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Report Details</AlertDialogTitle>
-                  <AlertDialogDescription>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Report Details</DialogTitle>
+                  <DialogDescription>
                     Created at: {formatDate(report.createdAt)}
                     <br />
                     Detections:
@@ -140,42 +141,42 @@ const Reports = () => {
                     Moderate-Caries = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-2-Moderate-Caries").length, 0)}
                     <br />
                     Extensive-Caries = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-3-Extensive-Caries").length, 0)}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Close</AlertDialogCancel>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Close</DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
                 <Button variant="destructive">Remove</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
                     Are you absolutely sure?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
+                  </DialogTitle>
+                  <DialogDescription>
                     This action cannot be undone. This will permanently delete
                     your account and remove your data from our servers.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
                     Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction asChild>
+                  </DialogClose>
+                  <DialogClose asChild>
                     <Button
                       variant="destructive"
                       onClick={() => handleRemove(report.id)}
                     >
                       Remove
                     </Button>
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </CardFooter>
         </Card>
       ))}

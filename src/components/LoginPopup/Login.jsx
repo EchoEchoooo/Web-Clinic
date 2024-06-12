@@ -28,14 +28,21 @@ const Login = ({ handleSignIn }) => {
   async function onSubmit(values) {
     try {
       const response = await login(values.email, values.password);
-      if (response.token) {
-        window.localStorage.setItem('token', response.token);
+      console.log(`Login response:`, response);
+      if (response.data.token) {
+        console.log(`Setting token to ${response.data.token}`);
+        window.localStorage.setItem('token', response.data.token);
       }
+
       toast({
         title: "Login successful",
         description: response.message,
         status: "success",
       });
+
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1500);
     } catch (error) {
       toast({
         variant: "destructive",

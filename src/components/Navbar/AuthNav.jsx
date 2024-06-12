@@ -1,13 +1,13 @@
 import Logo from "../../assets/caridentlogo2.png";
 import { ModeToggle } from "../mode-toggle";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import {
-  CalendarCheck,
+  CalendarCheck, CircleUser,
   LayoutDashboard,
-  LogOut,
-  NotebookText,
+  LogOut, Menu,
+  NotebookText, Package2, Search,
   Settings
 } from "lucide-react";
 
@@ -18,17 +18,19 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
+  AvatarImage
 } from "@/components/ui/avatar";
 
 import DentistDialog from "../Dentist/DentistDialog";
 import AdminDialog from "../Admin/AdminDialog";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet.jsx";
+import { Input } from "@/components/ui/input.jsx";
 
 const AuthNav = () => {
   const location = useLocation();
@@ -44,20 +46,141 @@ const AuthNav = () => {
 
   return (
     <>
-      <div className="bg-background-95 sticky top-0 z-50 border-b border-slate-100 backdrop-blur-sm dark:border-gray-800 dark:bg-zinc-950/60">
+      <div
+        className="bg-background-95 sticky top-0 z-50 border-b border-slate-100 backdrop-blur-sm dark:border-gray-800 dark:bg-zinc-950/60">
         <div className="container">
-          <nav className="flex items-center justify-between">
-            <a href="#" className="mt-2 text-2xl text-gray-800 dark:text-white">
-              <img src={Logo} alt="Logo" className="mb-3 mr-1 inline h-10" />
-              Carident
-            </a>
+          <header className=" justify-between bg-background sticky top-0 flex h-16 items-center gap-4 px-4 md:px-6">
+            <nav
+              className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+              <Link
+                href="#"
+                className="flex items-center"
+              >
+                <img
+                  src={Logo}
+                  alt="Logo"
+                  className="mb-3 h-10"
+                />
+                <p className="text-2xl text-gray-800 dark:text-white max-md:hidden">Carident</p>
+              </Link>
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-cyan-500 border-b border-cyan-500"
+                    : "text-zinc-950 hover:text-cyan-500 dark:hover:text-cyan-500 dark:text-zinc-50 hover:text-foreground transition-colors"
+                }
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/dentists"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-cyan-500 border-b border-cyan-500"
+                    : "text-zinc-950 hover:text-cyan-500 dark:hover:text-cyan-500 dark:text-zinc-50 hover:text-foreground transition-colors"
+                }
+              >
+                Dentists
+              </NavLink>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-cyan-500 border-b border-cyan-500"
+                    : "text-zinc-950 hover:text-cyan-500 dark:hover:text-cyan-500 dark:text-zinc-50 hover:text-foreground transition-colors"
+                }
+              >
+                Admin
+              </NavLink>
+              <NavLink
+                to="/appointments"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-cyan-500 border-b border-cyan-500"
+                    : "text-zinc-950 hover:text-cyan-500 dark:hover:text-cyan-500 dark:text-zinc-50 hover:text-foreground transition-colors"
+                }
+              >
+                Appointments
+              </NavLink>
+              <NavLink
+                to="/reports"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-cyan-500 border-b border-cyan-500"
+                    : "text-zinc-950 hover:text-cyan-500 dark:hover:text-cyan-500 dark:text-zinc-50 hover:text-foreground transition-colors"
+                }
+              >
+                Reports
+              </NavLink>
+            </nav>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0 md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <nav className="grid gap-6 text-lg font-medium">
+                  <Link
+                    href="#"
+                    className="flex items-center space-x-2"
+                  >
+                    <img
+                      src={Logo}
+                      alt="Logo"
+                      className="mb-3 h-10"
+                    />
+                    <p className="text-2xl text-gray-800 dark:text-white">Carident</p>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-foreground hover:text-foreground transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Dentists
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Admin
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Appointments
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Reports
+                  </Link>
+                </nav>
+              </SheetContent>
+            </Sheet>
             <div className="flex items-center gap-2">
               <ModeToggle />
               {renderRoleSpecificButton()}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
@@ -105,7 +228,7 @@ const AuthNav = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          </nav>
+          </header>
         </div>
       </div>
     </>
