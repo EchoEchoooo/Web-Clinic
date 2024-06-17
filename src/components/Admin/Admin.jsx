@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { addUserToClinicAdminByEmail } from "@/services/auth";
+import { addUserToClinicAdminByEmail } from "@/services/auth.js";
 import { toast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
@@ -20,7 +20,7 @@ const New_Admin = () => {
         },
     });
 
-    async function onSubmit(values) {   
+    async function onSubmit(values) {
         try {
             const token = window.localStorage.getItem('token');
             if (!token) {

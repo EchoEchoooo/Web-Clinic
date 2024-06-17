@@ -13,6 +13,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ClinicLayout from "./components/ClinicLayout";
 import AdminLayout from "./components/AdminLayout";
 import { AuthProvider } from '@/context/Authycontext';
+import DentistDashboard from "@/routes/DentistDashboard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,16 @@ const router = createBrowserRouter([
       {
         path: "dashboard/",
         element: <Dashboard />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "dentists/",
+        element: <DentistDashboard />,
       },
     ],
   },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,8 +18,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
-import { getSharedReports, deleteSharedReport } from "@/services/auth";
+import { deleteSharedReport, getSharedReports } from "@/services/auth.js";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/Authycontext";
 
@@ -28,8 +29,7 @@ const Reports = () => {
   const [reports, setReports] = useState([]);
 
   // Token provided for testing
-  const token =
-    "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJDYXJpZGVudE1lZGl4IiwiaXNzIjoiQ2FyaWRlbnRNZWRpeCIsImV4cCI6MTcxODU1MjYxMiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InRlc3R1c2VyQGVtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiOTEzZGYxM2QtMDI1Mi00ZmFhLWEyMDAtMDJjM2ViYzA3MjIxIiwianRpIjoiZTYwYzVkOGEtODRmYi00MWE1LThiZDQtNmI2MjhmMjliY2JiIiwiaWF0IjoxNzE3OTQ3ODEyLCJuYmYiOjE3MTc5NDc4MTJ9.H4ZytGYUnVHNb_JQLot2J7kXPcdHOJyR5KaR9YQrIWnrVUFayGzb6z9gxF82ezRZVkIwOMinBGeJ7sy5uRWkWA";
+  const token = window.localStorage.getItem("token");
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -48,7 +48,7 @@ const Reports = () => {
     };
 
     fetchReports();
-  }, [user]);
+  }, [user, token]);
 
   const handleRemove = async (reportId) => {
     try {
@@ -75,114 +75,225 @@ const Reports = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const getVariantForClass = (className) => {
+    switch (className) {
+      case "-0-Healthy":
+        return "healthy";
+      case "-1-Initial-Caries":
+        return "initial";
+      case "-2-Moderate-Caries":
+        return "moderate";
+      case "-3-Extensive-Caries":
+        return "extensive";
+      default:
+        return "default";
+    }
+  };
+
+  const getClassName = (className) => {
+    switch (className) {
+      case "-0-Healthy":
+        return "Healthy";
+      case "-1-Initial-Caries":
+        return "Initial";
+      case "-2-Moderate-Caries":
+        return "Moderate";
+      case "-3-Extensive-Caries":
+        return "Extensive";
+      default:
+        return "Unknown";
+    }
+  };
+
+  const getClassCounts = (images) => {
+    const counts = {
+      "-0-Healthy": 0,
+      "-1-Initial-Caries": 0,
+      "-2-Moderate-Caries": 0,
+      "-3-Extensive-Caries": 0,
+    };
+
+    images.forEach((image) => {
+      image.detections.forEach((detection) => {
+        if (counts[detection.className] !== undefined) {
+          counts[detection.className]++;
+        }
+      });
+    });
+
+    return counts;
+  };
+
+  const getImageClassCounts = (image) => {
+    const counts = {
+      "-0-Healthy": 0,
+      "-1-Initial-Caries": 0,
+      "-2-Moderate-Caries": 0,
+      "-3-Extensive-Caries": 0,
+    };
+
+    image.detections.forEach((detection) => {
+      if (counts[detection.className] !== undefined) {
+        counts[detection.className]++;
+      }
+    });
+
+    return counts;
+  };
 
   return (
     <div className="mt-4 flex flex-row flex-wrap gap-8">
-      {reports.map((report, index) => (
-        <Card className="w-[350px]" key={index}>
-          <CardHeader>
-            <CardTitle>{report.title}</CardTitle>
-            <CardDescription>{`Created at ${formatDate(report.createdAt)}`}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-row flex-wrap justify-center gap-2">
-              {report.images.map((image, idx) => (
-                <Dialog key={idx}>
-                  <DialogTrigger asChild>
-                    <div>
-                      <img
-                        className="h-64 rounded-xl object-cover"
-                        src={`https://api.carident.live/${image.plottedImagePath}`}
-                        alt={`Report ${index} image ${idx}`}
-                      />
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className="">
-                    <DialogHeader>
-                      <DialogTitle
-                        className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">{`Image #${idx + 1}`}</DialogTitle>
-                      <DialogDescription>
-                        <div className="flex justify-center">
+      {reports.map((report, index) => {
+        const counts = getClassCounts(report.images);
+        return (
+          <Card className="w-[350px]" key={index}>
+            <CardHeader>
+              <CardTitle>{report.title}</CardTitle>
+              <CardDescription>{`Created at ${formatDate(report.createdAt)}`}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-row flex-wrap justify-center gap-2">
+                {report.images.map((image, idx) => {
+                  const imageCounts = getImageClassCounts(image);
+                  return (
+                    <Dialog key={idx}>
+                      <DialogTrigger asChild>
+                        <div>
                           <img
-                            className="rounded-lg max-h-[calc(100vh-12rem)]"
+                            className="h-64 rounded-xl object-cover"
                             src={`https://api.carident.live/${image.plottedImagePath}`}
                             alt={`Report ${index} image ${idx}`}
                           />
                         </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                        Close
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              ))}
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Dialog> 
-              <DialogTrigger asChild>
-                <Button variant="outline">View</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Report Details</DialogTitle>
-                  <DialogDescription>
-                    Created at: {formatDate(report.createdAt)}
-                    <br />
-                    Detections:
-                    <br />
-                    Healthy = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-0-Healthy").length, 0)}
-                    <br />
-                    Initial-Caries = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-1-Initial-Caries").length, 0)}
-                    <br />
-                    Moderate-Caries = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-2-Moderate-Caries").length, 0)}
-                    <br />
-                    Extensive-Caries = {report.images.reduce((acc, img) => acc + img.detections.filter(detection => detection.className === "-3-Extensive-Caries").length, 0)}
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Close</DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive">Remove</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                    Are you absolutely sure?
-                  </DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                    Cancel
-                  </DialogClose>
-                  <DialogClose asChild>
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleRemove(report.id)}
-                    >
-                      Remove
-                    </Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </CardFooter>
-        </Card>
-      ))}
+                      </DialogTrigger>
+                      <DialogContent className="">
+                        <DialogHeader>
+                          <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">{`Image #${idx + 1}`}</DialogTitle>
+                          <DialogDescription>
+                            <div className="flex justify-center">
+                              <img
+                                className="max-h-[calc(100vh-12rem)] rounded-lg"
+                                src={`https://api.carident.live/${image.plottedImagePath}`}
+                                alt={`Report ${index} image ${idx}`}
+                              />
+                            </div>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {Object.keys(imageCounts).map((className) => (
+                                <Badge
+                                  key={className}
+                                  variant={getVariantForClass(className)}
+                                  className="self-start rounded-full px-2 py-1"
+                                >
+                                  {getClassName(className)}:{" "}
+                                  {imageCounts[className]}
+                                </Badge>
+                              ))}
+                            </div>
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                            Close
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  );
+                })}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {Object.keys(counts).map((className) => (
+                  <Badge
+                    key={className}
+                    variant={getVariantForClass(className)}
+                    className="rounded-full px-2 py-1"
+                  >
+                    {getClassName(className)}: {counts[className]}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">View Details</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                      {report.title}
+                    </DialogTitle>
+                    <DialogDescription>
+                      {report.description}
+                      <br />
+                      <br />
+                      Created at: {formatDate(report.createdAt)}
+                      <br />
+                      Created by: {report.user.name}
+                      <br />
+                      <br />
+                      Total Images: {report.images.length}
+                      <br />
+                      <div className="mt-2 flex flex-col gap-2">
+                        {Object.keys(counts).map((className) => (
+                          <div
+                            key={className}
+                            className="flex flex-row items-center gap-2"
+                          >
+                            <Badge
+                              variant={getVariantForClass(className)}
+                              className="h-1 justify-center rounded-full px-2 py-1"
+                            />
+                            <p>
+                              {getClassName(className)}: {counts[className]}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                      Close
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">Remove</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                      Are you absolutely sure?
+                    </DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the report and remove its data from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
+                      Cancel
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleRemove(report.id)}
+                      >
+                        Remove
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
-  
 };
 
 export default Reports;

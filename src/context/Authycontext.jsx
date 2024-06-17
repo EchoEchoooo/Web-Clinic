@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
-import { login, register, getMe, resetPassword } from '@/services/auth'; // Import your authentication functions
+import { login, register, getMe, resetPassword } from '@/services/auth.js'; // Import your authentication functions
 
 // Create the AuthContext
 const AuthContext = createContext();
