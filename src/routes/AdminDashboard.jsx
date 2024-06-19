@@ -22,7 +22,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import {
   getClinicAdmins,
-  removeUserFromClinicAdminByEmail,
+  removeUserFromClinicAdminByEmail, updateUser
 } from "@/services/auth.js";
 import { Edit, Loader2, Trash } from "lucide-react";
 import NewAdmin from "@/components/Admin/NewAdmin";
@@ -30,10 +30,8 @@ import UpdateAdmin from "@/components/Admin/UpdateAdmin";
 
 const AdminDashboard = () => {
   const [admins, setAdmins] = useState([]);
-  const [selectedAdmin, setSelectedAdmin] = useState(null);
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [removeIsLoading, setRemoveIsLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -45,7 +43,7 @@ const AdminDashboard = () => {
         console.error("Error fetching admins:", error);
         toast({
           title: "Error fetching admins",
-          description: error.message,
+          description: error.response.data.message ||  error.message,
           status: "error",
           variant: "destructive",
         });
@@ -59,7 +57,7 @@ const AdminDashboard = () => {
 
   const handleRemove = async (adminEmail) => {
     try {
-      setRemoveIsLoading(true);
+      setActionLoading(true);
       const token = window.localStorage.getItem("token");
       await removeUserFromClinicAdminByEmail(token, adminEmail);
       setAdmins(admins.filter((admin) => admin.email !== adminEmail));
@@ -72,22 +70,23 @@ const AdminDashboard = () => {
       console.error("Error removing admin:", error);
       toast({
         title: "Error removing admin",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
         variant: "destructive",
       });
     } finally {
-      setRemoveIsLoading(false);
+      setActionLoading(false);
     }
   };
 
-  const handleUpdate = async (values) => {
+  const handleUpdate = async (values, id) => {
     try {
+      setActionLoading(true);
       const token = window.localStorage.getItem("token");
-      await updateAdmin(token, selectedAdmin.email, values); // Assuming updateAdmin function exists
+      await updateUser(token, id, values); // Assuming updateAdmin function exists
       setAdmins(
         admins.map((admin) =>
-          admin.email === selectedAdmin.email ? { ...admin, ...values } : admin,
+          admin.id === id ? { ...admin, ...values } : admin,
         ),
       );
       toast({
@@ -95,20 +94,21 @@ const AdminDashboard = () => {
         description: "The admin's details have been successfully updated.",
         status: "success",
       });
-      setIsUpdateDialogOpen(false);
     } catch (error) {
       console.error("Error updating admin:", error);
       toast({
         title: "Error updating admin",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
         variant: "destructive",
       });
+    } finally {
+      setActionLoading(false);
     }
   };
 
   return (
-    <div className="d-flex flex-col">
+    <div className="flex-col">
       <div className="my-4">
         <Dialog>
           <DialogTrigger asChild>
@@ -159,10 +159,7 @@ const AdminDashboard = () => {
                   <div className="flex gap-2">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button
-                          variant="link"
-                          onClick={() => setSelectedAdmin(admin)}
-                        >
+                        <Button variant="link">
                           <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
                             <Trash size={16} />
                             <p>Remove</p>
@@ -184,7 +181,7 @@ const AdminDashboard = () => {
                             <Button>Cancel</Button>
                           </DialogClose>
                           <DialogClose asChild>
-                            {removeIsLoading ? (
+                            {actionLoading ? (
                               <Button variant="destructive" disabled>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Remove
@@ -192,9 +189,7 @@ const AdminDashboard = () => {
                             ) : (
                               <Button
                                 variant="destructive"
-                                onClick={() =>
-                                  handleRemove(selectedAdmin.email)
-                                }
+                                onClick={() => handleRemove(admin.email)}
                               >
                                 Remove
                               </Button>
@@ -203,18 +198,25 @@ const AdminDashboard = () => {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                    <Button
-                      variant="link"
-                      onClick={() => {
-                        setSelectedAdmin(admin);
-                        setIsUpdateDialogOpen(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
-                        <Edit size={16} />
-                        <p>Edit</p>
-                      </div>
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="link">
+                          <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
+                            <Edit size={16} />
+                            <p>Edit</p>
+                          </div>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Update Admin</DialogTitle>
+                          <DialogDescription>
+                            Updating {admin.name}&apos;s details.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <UpdateAdmin admin={admin} onUpdate={handleUpdate} actionLoading={actionLoading} />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </TableCell>
               </TableRow>
@@ -222,12 +224,6 @@ const AdminDashboard = () => {
           )}
         </TableBody>
       </Table>
-
-      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
-        <DialogContent className="p-0 sm:max-w-[425px]">
-          <UpdateAdmin admin={selectedAdmin} onUpdate={handleUpdate} />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

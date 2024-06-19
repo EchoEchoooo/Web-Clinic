@@ -42,7 +42,7 @@ const NewAdmin = () => {
     } catch (error) {
       toast({
         title: "Error adding admin",
-        description: error.message || "An error occurred.",
+        description: error.response.data.message ||  error.message,
         status: "error",
       });
     }

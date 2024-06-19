@@ -42,7 +42,7 @@ const Reports = () => {
         console.error("Error fetching shared reports:", error);
         toast({
           title: "Error fetching shared reports",
-          description: error.message,
+          description: error.response.data.message ||  error.message,
           status: "error",
           variant: "destructive",
         });
@@ -66,7 +66,7 @@ const Reports = () => {
       console.error("Error removing shared report:", error);
       toast({
         title: "Error removing shared report",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
         variant: "destructive",
       });

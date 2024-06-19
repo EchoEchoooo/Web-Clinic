@@ -53,7 +53,7 @@ const NewDentist = () => {
     } catch (error) {
       toast({
         title: "Error adding dentist",
-        description: error.message || "An error occurred.",
+        description: error.response.data.message ||  error.message,
         status: "error",
       });
     }

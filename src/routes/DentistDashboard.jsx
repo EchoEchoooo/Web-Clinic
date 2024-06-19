@@ -26,10 +26,8 @@ import UpdateDentist from "@/components/Dentist/UpdateDentist";
 
 const DentistDashboard = () => {
   const [dentists, setDentists] = useState([]);
-  const [selectedDentist, setSelectedDentist] = useState(null);
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [removeIsLoading, setRemoveIsLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     const fetchDentists = async () => {
@@ -41,7 +39,7 @@ const DentistDashboard = () => {
         console.error("Error fetching dentists:", error);
         toast({
           title: "Error fetching dentists",
-          description: error.message,
+          description: error.response.data.message ||  error.message,
           status: "error",
           variant: "destructive",
         });
@@ -55,7 +53,7 @@ const DentistDashboard = () => {
 
   const handleRemove = async (dentistId) => {
     try {
-      setRemoveIsLoading(true);
+      setActionLoading(true);
       const token = window.localStorage.getItem("token");
       await removeDentist(token, dentistId);
       setDentists(dentists.filter((dentist) => dentist.id !== dentistId));
@@ -68,22 +66,23 @@ const DentistDashboard = () => {
       console.error("Error removing dentist:", error);
       toast({
         title: "Error removing dentist",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
         variant: "destructive",
       });
     } finally {
-      setRemoveIsLoading(false);
+      setActionLoading(false);
     }
   };
 
-  const handleUpdate = async (values) => {
+  const handleUpdate = async (values, dentistId) => {
     try {
+      setActionLoading(true);
       const token = window.localStorage.getItem("token");
-      await updateDentist(token, selectedDentist.id, values);
+      await updateDentist(token, dentistId, values);
       setDentists(
         dentists.map((dentist) =>
-          dentist.id === selectedDentist.id ? { ...dentist, ...values } : dentist
+          dentist.id === dentistId ? { ...dentist, ...values } : dentist
         )
       );
       toast({
@@ -91,15 +90,16 @@ const DentistDashboard = () => {
         description: "The dentist's details have been successfully updated.",
         status: "success",
       });
-      setIsUpdateDialogOpen(false);
     } catch (error) {
       console.error("Error updating dentist:", error);
       toast({
         title: "Error updating dentist",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
         variant: "destructive",
       });
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -144,7 +144,6 @@ const DentistDashboard = () => {
                       <DialogTrigger asChild>
                         <Button
                           variant="link"
-                          onClick={() => setSelectedDentist(dentist)}
                         >
                           <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
                             <Trash size={16} />
@@ -167,7 +166,7 @@ const DentistDashboard = () => {
                             <Button>Cancel</Button>
                           </DialogClose>
                           <DialogClose asChild>
-                            {removeIsLoading ? (
+                            {actionLoading ? (
                               <Button variant="destructive" disabled>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Remove
@@ -175,7 +174,6 @@ const DentistDashboard = () => {
                             ) : (
                               <Button
                                 variant="destructive"
-                                onClick={() => handleRemove(selectedDentist.id)}
                               >
                                 Remove
                               </Button>
@@ -184,18 +182,25 @@ const DentistDashboard = () => {
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                    <Button
-                      variant="link"
-                      onClick={() => {
-                        setSelectedDentist(dentist);
-                        setIsUpdateDialogOpen(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
-                        <Edit size={16} />
-                        <p>Edit</p>
-                      </div>
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="link"
+                        >
+                          <div className="flex items-center gap-1 text-gray-400 dark:text-gray-600">
+                            <Edit size={16} />
+                            <p>Edit</p>
+                          </div>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogTitle>Update Dentist</DialogTitle>
+                        <DialogDescription>
+                          Updating {dentist.name}&apos;s details.
+                        </DialogDescription>
+                        <UpdateDentist dentist={dentist} onUpdate={handleUpdate} actionLoading={actionLoading} />
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </TableCell>
               </TableRow>
@@ -203,12 +208,6 @@ const DentistDashboard = () => {
           )}
         </TableBody>
       </Table>
-
-      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
-        <DialogContent className="p-0 sm:max-w-[425px]">
-          <UpdateDentist dentist={selectedDentist} onUpdate={handleUpdate} />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

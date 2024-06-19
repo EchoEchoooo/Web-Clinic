@@ -47,7 +47,7 @@ const Login = ({ handleSignIn }) => {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: error.message,
+        description: error.response.data.message ||  error.message,
         status: "error",
       });
     }
