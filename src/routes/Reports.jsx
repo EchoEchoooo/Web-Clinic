@@ -23,10 +23,12 @@ import { Badge } from "@/components/ui/badge";
 import { deleteSharedReport, getSharedReports } from "@/services/auth.js";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/Authycontext";
+import { Loader2 } from "lucide-react";
 
 const Reports = () => {
   const { user } = useAuth();
   const [reports, setReports] = useState([]);
+  const [removeIsLoading, setRemoveIsLoading] = useState(false);
 
   // Token provided for testing
   const token = window.localStorage.getItem("token");
@@ -52,6 +54,7 @@ const Reports = () => {
 
   const handleRemove = async (reportId) => {
     try {
+      setRemoveIsLoading(true);
       await deleteSharedReport(token, reportId);
       setReports(reports.filter((report) => report.id !== reportId));
       toast({
@@ -67,6 +70,8 @@ const Reports = () => {
         status: "error",
         variant: "destructive",
       });
+    } finally {
+      setRemoveIsLoading(false);
     }
   };
 
@@ -192,8 +197,8 @@ const Reports = () => {
                           </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                            Close
+                          <DialogClose>
+                            <Button>Close</Button>
                           </DialogClose>
                         </DialogFooter>
                       </DialogContent>
@@ -253,8 +258,8 @@ const Reports = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                      Close
+                    <DialogClose>
+                      <Button>Close</Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
@@ -274,16 +279,23 @@ const Reports = () => {
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <DialogClose className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">
-                      Cancel
+                    <DialogClose asChild>
+                      <Button className="bg-white text-black dark:bg-zinc-950 dark:text-zinc-50">Cancel</Button>
                     </DialogClose>
                     <DialogClose asChild>
-                      <Button
-                        variant="destructive"
-                        onClick={() => handleRemove(report.id)}
-                      >
-                        Remove
-                      </Button>
+                      {removeIsLoading ? (
+                        <Button variant="destructive" disabled>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Remove
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleRemove(report.id)}
+                        >
+                          Remove
+                        </Button>
+                      )}
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>

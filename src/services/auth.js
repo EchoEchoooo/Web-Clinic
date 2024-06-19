@@ -16,25 +16,35 @@ export const register = async (email, password) => {
   });
 };
 
-export const getMe = async () => {
-  return axios.get(`${BASE_URL}/Account/GetSelf`);
+export const getMe = async (token) => {
+  return axios.get(`${BASE_URL}/Account/GetSelf`, {
+    headers: {
+      Accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-export const resetPassword = async () => {
-  return axios.post(`${BASE_URL}/Account/ResetPassword`);
+export const resetPassword = async (token) => {
+  return axios.post(`${BASE_URL}/Account/ResetPassword`, null, {
+    headers: {
+      Accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const addDentist = async (token, email, name, phoneNumber) => {
   return axios.post(
     `${BASE_URL}/Clinic/AddDentist`,
-    { email: email, name: name, phoneNumber: phoneNumber },
+    { email, name, phoneNumber },
     {
       headers: {
         Accept: "text/plain",
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 };
 
@@ -48,15 +58,12 @@ export const getSharedReports = async (token) => {
 };
 
 export const deleteSharedReport = async (token, reportId) => {
-  return axios.delete(
-    `${BASE_URL}/Clinic/DeleteSharedReport/${reportId}`,
-    {
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${token}`,
-      },
+  return axios.delete(`${BASE_URL}/Clinic/DeleteSharedReport?reportId=${reportId}`, {
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 };
 
 export const addUserToClinicAdminByEmail = async (token, userEmail) => {
@@ -68,7 +75,7 @@ export const addUserToClinicAdminByEmail = async (token, userEmail) => {
         Accept: "*/*",
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
 };
 
@@ -90,8 +97,11 @@ export const getClinic = async (clinicId, token) => {
   });
 };
 
-export const getDentists = async (token) => {
-  return axios.get(`${BASE_URL}/Clinic/GetDentists`, {
+export const getDentists = async (token, clinicId = null) => {
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/GetDentists?clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/GetDentists`;
+  return axios.get(url, {
     headers: {
       Accept: "text/plain",
       Authorization: `Bearer ${token}`,
@@ -100,16 +110,15 @@ export const getDentists = async (token) => {
 };
 
 export const addUserToClinicAdmin = async (token, userId, clinicId) => {
-  return axios.post(
-    `${BASE_URL}/Clinic/AddUserToClinicAdmin?userId=${userId}&clinicId=${clinicId}`,
-    null,
-    {
-      headers: {
-        Accept: "*/*",
-        Authorization: `Bearer ${token}`,
-      },
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/AddUserToClinicAdmin?userId=${userId}&clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/AddUserToClinicAdmin?userId=${userId}`;
+  return axios.post(url, null, {
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 };
 
 export const deleteClinic = async (token, clinicId) => {
@@ -121,7 +130,7 @@ export const deleteClinic = async (token, clinicId) => {
   });
 };
 
-export const findNearbyClinics = async (token, latitude, longitude, radiusKm) => {
+export const findNearbyClinics = async (token, latitude, longitude, radiusKm = 50) => {
   return axios.get(
     `${BASE_URL}/Clinic/FindNearbyClinics?latitude=${latitude}&longitude=${longitude}&radiusKm=${radiusKm}`,
     {
@@ -129,12 +138,15 @@ export const findNearbyClinics = async (token, latitude, longitude, radiusKm) =>
         Accept: "text/plain",
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
 };
 
-export const getClinicAdmins = async (token, clinicId) => {
-  return axios.get(`${BASE_URL}/Clinic/GetClinicAdmins?clinicId=${clinicId}`, {
+export const getClinicAdmins = async (token, clinicId = null) => {
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/GetClinicAdmins?clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/GetClinicAdmins`;
+  return axios.get(url, {
     headers: {
       Accept: "text/plain",
       Authorization: `Bearer ${token}`,
@@ -142,7 +154,7 @@ export const getClinicAdmins = async (token, clinicId) => {
   });
 };
 
-export const getClinics = async (token, searchParams) => {
+export const getClinics = async (token, searchParams = {}) => {
   const params = new URLSearchParams(searchParams).toString();
   return axios.get(`${BASE_URL}/Clinic/GetClinics?${params}`, {
     headers: {
@@ -152,16 +164,58 @@ export const getClinics = async (token, searchParams) => {
   });
 };
 
-export const updateDentist = async (token, dentistId, updateRequest) => {
-  return axios.patch(
-    `${BASE_URL}/Clinic/UpdateDentist/${dentistId}`,
-    updateRequest,
-    {
-      headers: {
-        Accept: "text/plain",
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+export const removeDentist = async (token, dentistId, clinicId = null) => {
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/RemoveDentist?dentistId=${dentistId}&clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/RemoveDentist?dentistId=${dentistId}`;
+  return axios.delete(url, {
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
+};
+
+export const removeUserFromClinicAdmin = async (token, userId, clinicId = null) => {
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/RemoveUserFromClinicAdmin?userId=${userId}&clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/RemoveUserFromClinicAdmin?userId=${userId}`;
+  return axios.post(url, null, {
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const removeUserFromClinicAdminByEmail = async (token, userEmail, clinicId = null) => {
+  const url = clinicId
+    ? `${BASE_URL}/Clinic/RemoveUserFromClinicAdminByEmail?userEmail=${userEmail}&clinicId=${clinicId}`
+    : `${BASE_URL}/Clinic/RemoveUserFromClinicAdminByEmail?userEmail=${userEmail}`;
+  return axios.post(url, null, {
+    headers: {
+      Accept: "*/*",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const updateClinic = async (token, clinicId, updateRequest) => {
+  return axios.patch(`${BASE_URL}/Clinic/UpdateClinic/${clinicId}`, updateRequest, {
+    headers: {
+      Accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const updateDentist = async (token, dentistId, updateRequest) => {
+  return axios.patch(`${BASE_URL}/Clinic/UpdateDentist/${dentistId}`, updateRequest, {
+    headers: {
+      Accept: "text/plain",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 };

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import New_Dentist from "./Dentist";
+import NewDentist from "./NewDentist.jsx";
 import { useState } from "react";
 
 export default function DentistDialog() {
@@ -11,7 +11,7 @@ export default function DentistDialog() {
         <Button> New Dentist</Button>
       </DialogTrigger>
       <DialogContent className="p-0 sm:max-w-[425px]">
-        <New_Dentist handleSignIn={setShowSignIn} />
+        <NewDentist handleSignIn={setShowSignIn} />
       </DialogContent>
     </Dialog>
   );
