@@ -37,7 +37,7 @@ const AcceptAppointmentForm = ({ onSubmit, actionLoading }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Reason</FormLabel>
-              <Input placeholder="Enter reason for acceptance" {...field} />
+              <Input placeholder="Enter reason for cancellation" {...field} />
               <FormMessage />
             </FormItem>
           )}
@@ -49,7 +49,7 @@ const AcceptAppointmentForm = ({ onSubmit, actionLoading }) => {
               Processing...
             </>
           ) : (
-            "Accept Appointment"
+            "Cancel Appointment"
           )}
         </Button>
       </form>
