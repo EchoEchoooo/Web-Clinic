@@ -43,11 +43,23 @@ import {
 import { getAppointments, updateAppointment } from "@/services/auth.js";
 import AcceptAppointmentForm from "@/components/Appointment/AcceptAppointment.jsx";
 import CancelAppointmentForm from "@/components/Appointment/CancelAppointment.jsx";
+import { Badge } from "@/components/ui/badge.jsx";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+
+  const getVariantForStatus = (className) => {
+    switch (className) {
+      case "Accepted":
+        return "healthy";
+      case "Cancelled":
+        return "extensive";
+      default:
+        return "default";
+    }
+  };
 
   const columns = [
     {
@@ -78,8 +90,12 @@ const Appointments = () => {
       header: "",
       cell: ({ row }) => (
         <Avatar>
-          <AvatarImage src={`https://api.carident.live${row.getValue("Avatar")}`} />
-          <AvatarFallback>{row.getValue("Name")[0]}</AvatarFallback>
+          <AvatarImage
+            src={`https://api.carident.live${row.getValue("Avatar")}`}
+          />
+          <AvatarFallback>
+            {row.getValue("Name") ? row.getValue("Name")[0] : "-"}
+          </AvatarFallback>
         </Avatar>
       ),
     },
@@ -91,7 +107,15 @@ const Appointments = () => {
     {
       id: "Email",
       accessorKey: "user.email",
-      header: "Email",
+      header: ({ column }) => (
+        <Button
+          className="-ml-4"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
     },
     {
       id: "Scheduled Date",
@@ -117,7 +141,15 @@ const Appointments = () => {
     {
       id: "Created At",
       accessorKey: "createdAt",
-      header: "Created At",
+      header: ({ column }) => (
+        <Button
+          className="-ml-4"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Created At <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) =>
         new Date(row.getValue("Created At")).toLocaleString(undefined, {
           year: "numeric",
@@ -139,9 +171,22 @@ const Appointments = () => {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => (
+        <Button
+          className="-ml-4"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("status")}</div>
+        <Badge
+          variant={getVariantForStatus(row.getValue("status"))}
+          className="self-start rounded-full px-2 py-1"
+        >
+          {row.getValue("status")}
+        </Badge>
       ),
     },
     {
@@ -165,7 +210,7 @@ const Appointments = () => {
                 </DialogHeader>
                 <AcceptAppointmentForm
                   onSubmit={(reason) =>
-                    handleAction(appointment.id, "Accepted", reason)
+                    handleUpdateAppointment(appointment.id, "Accepted", reason)
                   }
                   actionLoading={actionLoading}
                 />
@@ -191,7 +236,7 @@ const Appointments = () => {
                 </DialogHeader>
                 <CancelAppointmentForm
                   onSubmit={(reason) =>
-                    handleAction(appointment.id, "Cancelled", reason)
+                    handleUpdateAppointment(appointment.id, "Cancelled", reason)
                   }
                   actionLoading={actionLoading}
                 />
@@ -230,11 +275,18 @@ const Appointments = () => {
     fetchAppointments();
   }, []);
 
-  const handleAction = async (appointmentId, status, reason) => {
+  const handleUpdateAppointment = async (appointmentId, status, data) => {
     try {
       setActionLoading(true);
       const token = window.localStorage.getItem("token");
-      await updateAppointment(token, appointmentId, { status, reason });
+      let update = { status };
+      if (status === "Cancelled") {
+        update = { ...update, clinicCancelMessage: data.reason };
+      } else {
+        update = { ...update, clinicMessage: data.reason };
+      }
+
+      await updateAppointment(token, appointmentId, update);
       setAppointments(
         appointments.map((appointment) =>
           appointment.id === appointmentId
@@ -288,10 +340,10 @@ const Appointments = () => {
     <div className="w-full text-black dark:text-zinc-50">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter by dentist email..."
-          value={table.getColumn("Dentist Email")?.getFilterValue() ?? ""}
+          placeholder="Filter by email..."
+          value={table.getColumn("Email")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("Dentist Email")?.setFilterValue(event.target.value)
+            table.getColumn("Email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
